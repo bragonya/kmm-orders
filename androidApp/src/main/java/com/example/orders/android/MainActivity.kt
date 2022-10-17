@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
+import org.koin.android.ext.android.inject
 
 @Composable
 fun MyApplicationTheme(
@@ -66,7 +67,7 @@ fun MyApplicationTheme(
 
 class MainActivity : ComponentActivity() {
 
-    val viewModel: MainActivityViewModel by viewModels()
+    private val viewModel: MainActivityViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

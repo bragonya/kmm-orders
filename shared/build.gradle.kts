@@ -23,6 +23,7 @@ kotlin {
     
     sourceSets {
         val ktorVersion = "2.1.2"
+        val koinVersion = "3.2.0"
         val commonMain by getting {
             dependencies {
                 // ...
@@ -30,6 +31,9 @@ kotlin {
                 implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
                 implementation("io.ktor:ktor-client-websockets:$ktorVersion")
+                implementation("io.insert-koin:koin-core:${koinVersion}")
+                implementation("io.insert-koin:koin-test:${koinVersion}")
+                implementation("io.insert-koin:koin-android:${koinVersion}")
             }
         }
         val commonTest by getting {

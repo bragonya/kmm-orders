@@ -6,10 +6,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.orders.SocketClient
 import kotlinx.coroutines.launch
 
-class MainActivityViewModel: ViewModel() {
+class MainActivityViewModel(
+    val socketClient:SocketClient
+): ViewModel() {
 
     val messages = mutableStateListOf<String>()
-    private val socketClient = SocketClient()
+
     init {
         viewModelScope.launch {
             socketClient.setup().collect { message ->
