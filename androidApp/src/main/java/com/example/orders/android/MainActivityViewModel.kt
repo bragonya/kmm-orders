@@ -7,14 +7,14 @@ import com.example.orders.SocketClient
 import kotlinx.coroutines.launch
 
 class MainActivityViewModel(
-    val socketClient:SocketClient
+    val socketClient: SocketClient
 ): ViewModel() {
 
     val messages = mutableStateListOf<String>()
 
     init {
         viewModelScope.launch {
-            socketClient.setup().collect { message ->
+            socketClient.setup(this).collect { message ->
                 messages.add(message)
             }
         }

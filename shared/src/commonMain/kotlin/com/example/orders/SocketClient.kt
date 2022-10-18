@@ -1,41 +1,42 @@
 package com.example.orders
 
 import com.example.orders.config.Configuration
-import io.ktor.client.*
-import io.ktor.client.plugins.websocket.*
-import io.ktor.websocket.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
+import org.hildan.krossbow.stomp.StompClient
+import org.hildan.krossbow.stomp.StompSession
+import org.hildan.krossbow.stomp.sendText
+import org.hildan.krossbow.stomp.subscribeText
+import org.hildan.krossbow.websocket.ktor.KtorWebSocketClient
 
 class SocketClient(
     private val configuration: Configuration
 ) {
-    private val client = HttpClient {
-        install(WebSockets) {
-            pingInterval = 500
-        }
-    }
+    private val client = StompClient(KtorWebSocketClient())
 
     val sendMessage: MutableStateFlow<String?> = MutableStateFlow(null)
 
-    suspend fun setup() = flow {
-            client.webSocket(host = configuration.socketBaseUrl, port = 8080, path = "/orders") {
+    suspend fun setup(coroutineScope: CoroutineScope) = flow {
+        val session: StompSession = client.connect(configuration.socketBaseUrl)
 
-                launch {
-                    sendMessage.collect { message ->
-                        message?.let { m ->
-                            send(m)
-                        }
-                    }
-                }
-
-                for(message in incoming) {
-                    if (message as? Frame.Text != null) {
-                        emit(message.readText())
+        coroutineScope.launch {
+            launch(SupervisorJob(this.coroutineContext.job)) {
+                sendMessage.collect { message ->
+                    message?.let { m ->
+                        session.sendText("/app/orders", m)
                     }
                 }
             }
         }
+        val subscription: Flow<String> = session.subscribeText("/topic/orders")
 
+        subscription.collect { msg ->
+            emit(msg)
+        }
+    }
 }
