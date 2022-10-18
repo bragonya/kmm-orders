@@ -78,17 +78,22 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val messages = viewModel.messages
+                    val errorScreen = viewModel.errorScreen
                     var text by remember {
                         mutableStateOf("")
                     }
-                    Column {
-                        TextField(value = text, onValueChange = { newText ->
-                            text = newText
-                        })
-                        Button(onClick = { viewModel.sendMessage(text) }) {
-                            Text(text = "Send message")
+                    if(!errorScreen) {
+                        Column {
+                            TextField(value = text, onValueChange = { newText ->
+                                text = newText
+                            })
+                            Button(onClick = { viewModel.sendMessage(text) }) {
+                                Text(text = "Send message")
+                            }
+                            Chat(messages)
                         }
-                        Chat(messages)
+                    } else {
+                        Text(text = "Something went wrong")
                     }
                 }
             }

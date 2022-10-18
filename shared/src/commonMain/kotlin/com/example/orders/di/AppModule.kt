@@ -1,7 +1,6 @@
 package com.example.orders.di
 
-import com.example.orders.SocketClient
-import com.example.orders.config.Configuration
+import com.example.orders.sockets.SocketClient
 import com.example.orders.config.ConfigurationProd
 import com.example.orders.config.ConfigurationStage
 import io.ktor.util.*

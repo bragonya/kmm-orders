@@ -1,4 +1,4 @@
-package com.example.orders
+package com.example.orders.sockets
 
 import com.example.orders.config.Configuration
 import kotlinx.coroutines.CoroutineScope
@@ -22,21 +22,25 @@ class SocketClient(
     val sendMessage: MutableStateFlow<String?> = MutableStateFlow(null)
 
     suspend fun setup(coroutineScope: CoroutineScope) = flow {
-        val session: StompSession = client.connect(configuration.socketBaseUrl)
+        try {
+            val session: StompSession = client.connect(configuration.socketBaseUrl)
 
-        coroutineScope.launch {
-            launch(SupervisorJob(this.coroutineContext.job)) {
-                sendMessage.collect { message ->
-                    message?.let { m ->
-                        session.sendText("/app/orders", m)
+            coroutineScope.launch {
+                launch(SupervisorJob(this.coroutineContext.job)) {
+                    sendMessage.collect { message ->
+                        message?.let { m ->
+                            session.sendText("/app/orders", m)
+                        }
                     }
                 }
             }
-        }
-        val subscription: Flow<String> = session.subscribeText("/topic/orders")
+            val subscription: Flow<String> = session.subscribeText("/topic/orders")
 
-        subscription.collect { msg ->
-            emit(msg)
+            subscription.collect { msg ->
+                emit(SocketState.Success(msg))
+            }
+        } catch (e: Exception) {
+            emit(SocketState.Failure(e))
         }
     }
 }
