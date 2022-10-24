@@ -35,8 +35,7 @@ kotlin {
                 implementation("io.insert-koin:koin-core:${koinVersion}")
                 implementation("io.insert-koin:koin-test:${koinVersion}")
                 implementation("io.insert-koin:koin-android:${koinVersion}")
-                implementation("org.hildan.krossbow:krossbow-stomp-core:$krossbowVersion")
-                implementation("org.hildan.krossbow:krossbow-websocket-ktor:$krossbowVersion")
+                implementation("io.rsocket.kotlin:rsocket-ktor-client:0.15.4")
             }
         }
         val commonTest by getting {

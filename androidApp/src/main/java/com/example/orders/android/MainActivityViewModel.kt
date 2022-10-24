@@ -1,5 +1,6 @@
 package com.example.orders.android
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +28,7 @@ class MainActivityViewModel(
                         messages.add(state.text)
                     }
                     is SocketState.Failure -> {
+                        Log.e("error", state.e.message.toString())
                         if(messages.isEmpty()) { errorScreen = true }
                     }
                 }
