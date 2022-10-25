@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform")
+    kotlin("plugin.serialization")
     kotlin("native.cocoapods")
     id("com.android.library")
 }
@@ -24,7 +25,7 @@ kotlin {
     sourceSets {
         val ktorVersion = "2.1.2"
         val koinVersion = "3.2.0"
-        val krossbowVersion = "4.1.0"
+        val kotlinSerialization = "1.4.1"
         val commonMain by getting {
             dependencies {
                 // ...
@@ -36,6 +37,8 @@ kotlin {
                 implementation("io.insert-koin:koin-test:${koinVersion}")
                 implementation("io.insert-koin:koin-android:${koinVersion}")
                 implementation("io.rsocket.kotlin:rsocket-ktor-client:0.15.4")
+                implementation("io.rsocket.kotlin:rsocket-transport-ktor-tcp:0.15.4")
+                api("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:${kotlinSerialization}")
             }
         }
         val commonTest by getting {
